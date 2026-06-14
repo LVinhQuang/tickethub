@@ -1,12 +1,11 @@
 package com.dormhub.auth.controller;
 
-import com.dormhub.auth.dto.LoginRequestDTO;
-import com.dormhub.auth.dto.LoginResponseDTO;
-import com.dormhub.auth.dto.RegisterRequestDTO;
-import com.dormhub.auth.dto.RegisterResponseDTO;
+import com.dormhub.auth.dto.*;
 import com.dormhub.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,5 +23,18 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO request) {
         return authService.login(request);
+    }
+
+    @GetMapping("/me")
+    public MeResponseDTO me(Authentication authentication) {
+        return new MeResponseDTO(
+            authentication.getName(),
+            authentication.getAuthorities()
+                .stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .map(role -> role.replace("ROLE_", ""))
+                .orElse(null)
+        );
     }
 }

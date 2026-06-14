@@ -1,6 +1,7 @@
 package com.dormhub.auth.security;
 
 import com.dormhub.auth.domain.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,5 +43,13 @@ public class JwtService {
 
     public long getExpirationSeconds() {
         return expirationMinutes * 60;
+    }
+
+    public Claims parseToken(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
