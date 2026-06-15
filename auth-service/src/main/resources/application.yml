@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: auth-service
@@ -16,5 +19,5 @@ spring:
 
 app:
   jwt:
-    secret: "this-is-a-demo-secret-key-for-dormhub-auth-service"
+    secret: "this-is-a-demo-secret-key-for-tickethub-auth-service"
     expiration-minutes: 60
