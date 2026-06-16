@@ -6,9 +6,14 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      routes:
-        # auth-service route
-        - id: auth-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/auth/**
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/auth/**
+
+app:
+  jwt:
+    secret: "this-is-a-demo-secret-key-for-tickethub-auth-service"
