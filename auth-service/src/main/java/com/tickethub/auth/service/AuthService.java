@@ -31,14 +31,14 @@ public class AuthService {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        Role studentRole = roleRepository.findByName(RoleName.STUDENT)
-                .orElseThrow(() -> new IllegalStateException("Default STUDENT role not found"));
+        Role customerRole = roleRepository.findByName(RoleName.CUSTOMER)
+                .orElseThrow(() -> new IllegalStateException("Default CUSTOMER role not found"));
 
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(studentRole);
+        user.setRole(customerRole);
         user.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
