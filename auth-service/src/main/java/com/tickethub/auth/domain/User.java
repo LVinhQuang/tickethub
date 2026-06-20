@@ -1,4 +1,4 @@
-package com.dormhub.auth.domain;
+package com.tickethub.auth.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

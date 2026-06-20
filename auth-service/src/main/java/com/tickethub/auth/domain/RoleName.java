@@ -1,4 +1,4 @@
-package com.dormhub.auth.domain;
+package com.tickethub.auth.domain;
 
 public enum RoleName {
     ADMIN,

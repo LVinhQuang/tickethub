@@ -1,7 +1,7 @@
-package com.dormhub.auth.controller;
+package com.tickethub.auth.controller;
 
-import com.dormhub.auth.dto.*;
-import com.dormhub.auth.service.AuthService;
+import com.tickethub.auth.dto.*;
+import com.tickethub.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

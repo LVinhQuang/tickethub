@@ -1,4 +1,4 @@
-package com.dormhub.auth.security;
+package com.tickethub.auth.security;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
-package com.dormhub.auth.security;
+package com.tickethub.auth.security;
 
-import com.dormhub.auth.domain.User;
+import com.tickethub.auth.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

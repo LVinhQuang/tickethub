@@ -1,15 +1,15 @@
-package com.dormhub.auth.service;
+package com.tickethub.auth.service;
 
-import com.dormhub.auth.domain.Role;
-import com.dormhub.auth.domain.RoleName;
-import com.dormhub.auth.domain.User;
-import com.dormhub.auth.dto.LoginRequestDTO;
-import com.dormhub.auth.dto.LoginResponseDTO;
-import com.dormhub.auth.dto.RegisterRequestDTO;
-import com.dormhub.auth.dto.RegisterResponseDTO;
-import com.dormhub.auth.repository.RoleRepository;
-import com.dormhub.auth.repository.UserRepository;
-import com.dormhub.auth.security.JwtService;
+import com.tickethub.auth.domain.Role;
+import com.tickethub.auth.domain.RoleName;
+import com.tickethub.auth.domain.User;
+import com.tickethub.auth.dto.LoginRequestDTO;
+import com.tickethub.auth.dto.LoginResponseDTO;
+import com.tickethub.auth.dto.RegisterRequestDTO;
+import com.tickethub.auth.dto.RegisterResponseDTO;
+import com.tickethub.auth.repository.RoleRepository;
+import com.tickethub.auth.repository.UserRepository;
+import com.tickethub.auth.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

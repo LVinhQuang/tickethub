@@ -1,4 +1,4 @@
-package com.dormhub.auth.dto;
+package com.tickethub.auth.dto;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,6 @@
-package com.dormhub.auth.config;
+package com.tickethub.auth.config;
 
-import com.dormhub.auth.security.JwtAuthenticationFilter;
+import com.tickethub.auth.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

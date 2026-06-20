@@ -1,6 +1,6 @@
-package com.dormhub.auth.exception;
+package com.tickethub.auth.exception;
 
-import com.dormhub.auth.dto.ErrorResponseDTO;
+import com.tickethub.auth.dto.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;

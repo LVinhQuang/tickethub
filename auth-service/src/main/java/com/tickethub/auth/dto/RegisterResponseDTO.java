@@ -1,6 +1,6 @@
-package com.dormhub.auth.dto;
+package com.tickethub.auth.dto;
 
-import com.dormhub.auth.domain.RoleName;
+import com.tickethub.auth.domain.RoleName;
 
 import java.util.UUID;
 

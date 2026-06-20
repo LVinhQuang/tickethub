@@ -1,4 +1,4 @@
-package com.dormhub.auth.config;
+package com.tickethub.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

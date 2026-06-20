@@ -1,7 +1,7 @@
-package com.dormhub.auth.repository;
+package com.tickethub.auth.repository;
 
-import com.dormhub.auth.domain.Role;
-import com.dormhub.auth.domain.RoleName;
+import com.tickethub.auth.domain.Role;
+import com.tickethub.auth.domain.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
