@@ -14,6 +14,25 @@ spring:
               predicates:
                 - Path=/auth/**
 
+            - id: catalog-service-public
+              uri: http://localhost:8082
+              predicates:
+                - Path=/events/**
+
+            - id: catalog-service-admin
+              uri: http://localhost:8082
+              predicates:
+                - Path=/admin/events/**
+              filters:
+                - JwtValidationFilter
+
+            - id: booking-service
+              uri: http://localhost:8083
+              predicates:
+                - Path=/bookings/**
+              filters:
+                - JwtValidationFilter
+
 app:
   jwt:
     secret: "this-is-a-demo-secret-key-for-tickethub-auth-service"
