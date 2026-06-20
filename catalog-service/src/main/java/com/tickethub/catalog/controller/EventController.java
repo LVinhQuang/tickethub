@@ -29,4 +29,9 @@ public class EventController {
     public List<TicketTypeResponseDTO> getTicketTypes(@PathVariable String id) {
         return catalogService.getTicketTypesByEventId(id);
     }
+
+    @GetMapping("/ticket-types/{id}")
+    public TicketTypeResponseDTO getTicketTypeById(@PathVariable String id) {
+        return catalogService.getTicketTypeById(id);
+    }
 }

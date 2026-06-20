@@ -50,6 +50,13 @@ public class CatalogService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public TicketTypeResponseDTO getTicketTypeById(String id) {
+        TicketType ticketType = ticketTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket type not found"));
+        return mapToTicketTypeResponse(ticketType);
+    }
+
     @Transactional
     public EventResponseDTO createEvent(CreateEventRequest request) {
         Event event = Event.builder()
