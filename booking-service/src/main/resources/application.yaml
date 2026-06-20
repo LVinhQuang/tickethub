@@ -5,12 +5,16 @@ spring:
   application:
     name: booking-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/booking_db
-    username: postgres
-    password: 123456
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/booking_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
   flyway:
     enabled: false
+
+app:
+  services:
+    catalog-url: ${CATALOG_SERVICE_URL:http://localhost:8082}

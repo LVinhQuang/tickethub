@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "catalog-service", url = "http://localhost:8082")
+@FeignClient(name = "catalog-service", url = "${app.services.catalog-url}")
 public interface CatalogClient {
 
     @GetMapping("/events/ticket-types/{id}")
