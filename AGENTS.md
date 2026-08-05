@@ -2,6 +2,7 @@
 
 ## General Behavior
 - Do not implement code, modify files, or generate patches unless the user explicitly requests implementation.
+- Do not automatically run a build after completing code changes unless it is necessary to validate the result or the user explicitly requests it.
 - If the user's intent is ambiguous, ask clarifying questions before providing a solution.
 - If additional information would materially improve the answer, ask for it first.
 - Prefer concise answers. Provide detailed explanations only when explicitly requested or when necessary to avoid misunderstanding.
