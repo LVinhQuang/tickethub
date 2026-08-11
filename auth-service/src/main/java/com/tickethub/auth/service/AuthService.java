@@ -3,10 +3,10 @@ package com.tickethub.auth.service;
 import com.tickethub.auth.domain.Role;
 import com.tickethub.auth.domain.RoleName;
 import com.tickethub.auth.domain.User;
-import com.tickethub.auth.dto.LoginRequestDTO;
-import com.tickethub.auth.dto.LoginResponseDTO;
-import com.tickethub.auth.dto.RegisterRequestDTO;
-import com.tickethub.auth.dto.RegisterResponseDTO;
+import com.tickethub.auth.dto.LoginRequest;
+import com.tickethub.auth.dto.LoginResponse;
+import com.tickethub.auth.dto.RegisterRequest;
+import com.tickethub.auth.dto.RegisterResponse;
 import com.tickethub.auth.repository.RoleRepository;
 import com.tickethub.auth.repository.UserRepository;
 import com.tickethub.auth.security.JwtService;
@@ -26,7 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public RegisterResponseDTO register(RegisterRequestDTO request) {
+    public RegisterResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
@@ -43,14 +43,14 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        return new RegisterResponseDTO(
+        return new RegisterResponse(
                 savedUser.getId(),
                 savedUser.getEmail(),
                 savedUser.getRole().getName()
         );
     }
 
-    public LoginResponseDTO login(LoginRequestDTO request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
@@ -60,7 +60,7 @@ public class AuthService {
 
         String accessToken = jwtService.generateAccessToken(user);
 
-        return new LoginResponseDTO(
+        return new LoginResponse(
                 accessToken,
                 "Bearer",
                 jwtService.getExpirationSeconds(),

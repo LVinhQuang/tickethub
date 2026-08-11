@@ -16,18 +16,18 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO request) {
+    public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
     @GetMapping("/me")
-    public MeResponseDTO me(Authentication authentication) {
-        return new MeResponseDTO(
+    public MeResponse me(Authentication authentication) {
+        return new MeResponse(
             authentication.getName(),
             authentication.getAuthorities()
                 .stream()

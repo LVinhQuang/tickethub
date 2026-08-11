@@ -1,4 +1,4 @@
-package com.tickethub.catalog.dto;
+package com.tickethub.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicketTypeResponseDTO {
+public class TicketTypeResponse {
     private String id;
     private String name;
     private BigDecimal price;

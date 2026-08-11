@@ -1,6 +1,6 @@
 package com.tickethub.auth.dto;
 
-public record MeResponseDTO(
+public record MeResponse(
     String email,
     String role
 ) {

@@ -20,28 +20,28 @@ public class CatalogService {
     private final TicketTypeRepository ticketTypeRepository;
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getActiveEvents() {
+    public List<EventResponse> getActiveEvents() {
         return eventRepository.findByStatus("ACTIVE").stream()
                 .map(this::mapToEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAllEvents() {
+    public List<EventResponse> getAllEvents() {
         return eventRepository.findAll().stream()
                 .map(this::mapToEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public EventResponseDTO getEventById(String id) {
+    public EventResponse getEventById(String id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         return mapToEventResponse(event);
     }
 
     @Transactional(readOnly = true)
-    public List<TicketTypeResponseDTO> getTicketTypesByEventId(String eventId) {
+    public List<TicketTypeResponse> getTicketTypesByEventId(String eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new RuntimeException("Event not found");
         }
@@ -51,14 +51,14 @@ public class CatalogService {
     }
 
     @Transactional(readOnly = true)
-    public TicketTypeResponseDTO getTicketTypeById(String id) {
+    public TicketTypeResponse getTicketTypeById(String id) {
         TicketType ticketType = ticketTypeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket type not found"));
         return mapToTicketTypeResponse(ticketType);
     }
 
     @Transactional
-    public EventResponseDTO createEvent(CreateEventRequest request) {
+    public EventResponse createEvent(CreateEventRequest request) {
         Event event = Event.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -72,7 +72,7 @@ public class CatalogService {
     }
 
     @Transactional
-    public EventResponseDTO updateEvent(String id, CreateEventRequest request) {
+    public EventResponse updateEvent(String id, CreateEventRequest request) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         
@@ -87,7 +87,7 @@ public class CatalogService {
     }
 
     @Transactional
-    public TicketTypeResponseDTO addTicketType(String eventId, CreateTicketTypeRequest request) {
+    public TicketTypeResponse addTicketType(String eventId, CreateTicketTypeRequest request) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
@@ -101,8 +101,8 @@ public class CatalogService {
         return mapToTicketTypeResponse(saved);
     }
 
-    private EventResponseDTO mapToEventResponse(Event event) {
-        return EventResponseDTO.builder()
+    private EventResponse mapToEventResponse(Event event) {
+        return EventResponse.builder()
                 .id(event.getId())
                 .title(event.getTitle())
                 .description(event.getDescription())
@@ -113,8 +113,8 @@ public class CatalogService {
                 .build();
     }
 
-    private TicketTypeResponseDTO mapToTicketTypeResponse(TicketType ticketType) {
-        return TicketTypeResponseDTO.builder()
+    private TicketTypeResponse mapToTicketTypeResponse(TicketType ticketType) {
+        return TicketTypeResponse.builder()
                 .id(ticketType.getId())
                 .name(ticketType.getName())
                 .price(ticketType.getPrice())

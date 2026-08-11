@@ -1,6 +1,7 @@
 package com.tickethub.booking.service;
 
 import com.tickethub.booking.client.CatalogClient;
+import com.tickethub.booking.client.InventoryClient;
 import com.tickethub.booking.dto.*;
 import com.tickethub.booking.entity.*;
 import com.tickethub.booking.repository.BookingRepository;
@@ -21,7 +22,7 @@ public class BookingService {
     private final CatalogClient catalogClient;
 
     @Transactional
-    public BookingResponseDTO createBooking(String userId, CreateBookingRequest request) {
+    public BookingResponse createBooking(String userId, CreateBookingRequest request) {
         // 1. Initialize booking
         Booking booking = Booking.builder()
                 .userId(userId)
@@ -35,7 +36,7 @@ public class BookingService {
         // 2. Process request items and calculate total amount
         for (BookingItemRequest itemReq : request.getItems()) {
             // Call Catalog Service via Feign Client
-            TicketTypeResponseDTO ticketType = catalogClient.getTicketTypeById(itemReq.getTicketTypeId());
+            TicketTypeResponse ticketType = catalogClient.getTicketTypeById(itemReq.getTicketTypeId());
             if (ticketType == null) {
                 throw new RuntimeException("Ticket type not found: " + itemReq.getTicketTypeId());
             }
@@ -72,14 +73,14 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookingResponseDTO> getBookingsByUserId(String userId) {
+    public List<BookingResponse> getBookingsByUserId(String userId) {
         return bookingRepository.findByUserId(userId).stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public BookingResponseDTO getBookingById(String userId, String bookingId) {
+    public BookingResponse getBookingById(String userId, String bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         
@@ -91,7 +92,7 @@ public class BookingService {
     }
 
     @Transactional
-    public BookingResponseDTO cancelBooking(String userId, String bookingId) {
+    public BookingResponse cancelBooking(String userId, String bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -116,9 +117,9 @@ public class BookingService {
         return mapToBookingResponse(saved);
     }
 
-    private BookingResponseDTO mapToBookingResponse(Booking booking) {
-        List<BookingItemResponseDTO> itemDTOs = booking.getItems().stream()
-                .map(item -> BookingItemResponseDTO.builder()
+    private BookingResponse mapToBookingResponse(Booking booking) {
+        List<BookingItemResponse> itemDTOs = booking.getItems().stream()
+                .map(item -> BookingItemResponse.builder()
                         .id(item.getId())
                         .ticketTypeId(item.getTicketTypeId())
                         .quantity(item.getQuantity())
@@ -126,7 +127,7 @@ public class BookingService {
                         .build())
                 .collect(Collectors.toList());
 
-        return BookingResponseDTO.builder()
+        return BookingResponse.builder()
                 .id(booking.getId())
                 .userId(booking.getUserId())
                 .status(booking.getStatus().name())

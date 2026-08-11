@@ -1,6 +1,6 @@
 package com.tickethub.inventory.exception;
 
-import com.tickethub.inventory.dto.ErrorResponseDTO;
+import com.tickethub.inventory.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponseDTO handleNotFound(
+    public ErrorResponse handleNotFound(
             IllegalArgumentException ex,
             HttpServletRequest request
     ) {
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponseDTO handleConflict(
+    public ErrorResponse handleConflict(
             IllegalStateException ex,
             HttpServletRequest request
     ) {
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDTO handleValidation(
+    public ErrorResponse handleValidation(
             MethodArgumentNotValidException ex,
             HttpServletRequest request
     ) {
@@ -45,12 +45,12 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 
-    private ErrorResponseDTO errorResponse(
+    private ErrorResponse errorResponse(
             HttpStatus status,
             String message,
             HttpServletRequest request
     ) {
-        return new ErrorResponseDTO(
+        return new ErrorResponse(
                 LocalDateTime.now(),
                 status.value(),
                 status.getReasonPhrase(),

@@ -3,7 +3,7 @@ package com.tickethub.auth.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequestDTO(
+public record LoginRequest(
         @Email
         @NotBlank
         String email,

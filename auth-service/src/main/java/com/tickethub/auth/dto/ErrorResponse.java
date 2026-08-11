@@ -2,7 +2,7 @@ package com.tickethub.auth.dto;
 
 import java.time.LocalDateTime;
 
-public record ErrorResponseDTO(
+public record ErrorResponse(
         LocalDateTime timestamp,
         int status,
         String error,

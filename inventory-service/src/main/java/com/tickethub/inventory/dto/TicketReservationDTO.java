@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationResponse {
+public class TicketReservationDTO {
 
     private String id;
     private String bookingId;

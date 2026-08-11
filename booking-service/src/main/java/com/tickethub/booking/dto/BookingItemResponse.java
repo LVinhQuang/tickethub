@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingItemResponseDTO {
+public class BookingItemResponse {
     private String id;
     private String ticketTypeId;
     private Integer quantity;

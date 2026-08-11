@@ -1,4 +1,4 @@
-package com.tickethub.catalog.dto;
+package com.tickethub.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventResponseDTO {
+public class ReserveTicketResponse {
+
     private String id;
-    private String title;
-    private String description;
-    private String venue;
-    private LocalDateTime startTime;
-    private String imageUrl;
+    private String bookingId;
+    private String userId;
+    private String ticketTypeId;
+    private Integer quantity;
     private String status;
+    private LocalDateTime expiresAt;
 }

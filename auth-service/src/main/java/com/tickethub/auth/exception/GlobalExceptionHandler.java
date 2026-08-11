@@ -1,6 +1,6 @@
 package com.tickethub.auth.exception;
 
-import com.tickethub.auth.dto.ErrorResponseDTO;
+import com.tickethub.auth.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,11 +11,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDTO handleBadRequest(
+    public ErrorResponse handleBadRequest(
             IllegalArgumentException ex,
             HttpServletRequest request
     ) {
-        return new ErrorResponseDTO(
+        return new ErrorResponse(
                 java.time.LocalDateTime.now(),
                 400,
                 "Bad Request",
@@ -26,11 +26,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponseDTO handleIllegalState(
+    public ErrorResponse handleIllegalState(
             IllegalStateException ex,
             HttpServletRequest request
     ) {
-        return new ErrorResponseDTO(
+        return new ErrorResponse(
                 java.time.LocalDateTime.now(),
                 500,
                 "Internal Server Error",
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDTO handleValidation(
+    public ErrorResponse handleValidation(
             MethodArgumentNotValidException ex,
             HttpServletRequest request
     ) {
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .orElse("Validation failed");
 
-        return new ErrorResponseDTO(
+        return new ErrorResponse(
                 java.time.LocalDateTime.now(),
                 400,
                 "Bad Request",

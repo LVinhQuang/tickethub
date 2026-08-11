@@ -16,22 +16,22 @@ public class AdminEventController {
     private final CatalogService catalogService;
 
     @GetMapping
-    public List<EventResponseDTO> getAllEvents() {
+    public List<EventResponse> getAllEvents() {
         return catalogService.getAllEvents();
     }
 
     @PostMapping
-    public EventResponseDTO createEvent(@Valid @RequestBody CreateEventRequest request) {
+    public EventResponse createEvent(@Valid @RequestBody CreateEventRequest request) {
         return catalogService.createEvent(request);
     }
 
     @PutMapping("/{id}")
-    public EventResponseDTO updateEvent(@PathVariable String id, @Valid @RequestBody CreateEventRequest request) {
+    public EventResponse updateEvent(@PathVariable String id, @Valid @RequestBody CreateEventRequest request) {
         return catalogService.updateEvent(id, request);
     }
 
     @PostMapping("/{id}/ticket-types")
-    public TicketTypeResponseDTO addTicketType(
+    public TicketTypeResponse addTicketType(
             @PathVariable String id,
             @Valid @RequestBody CreateTicketTypeRequest request
     ) {

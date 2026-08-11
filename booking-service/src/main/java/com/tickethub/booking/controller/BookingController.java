@@ -1,6 +1,6 @@
 package com.tickethub.booking.controller;
 
-import com.tickethub.booking.dto.BookingResponseDTO;
+import com.tickethub.booking.dto.BookingResponse;
 import com.tickethub.booking.dto.CreateBookingRequest;
 import com.tickethub.booking.service.BookingService;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingResponseDTO createBooking(
+    public BookingResponse createBooking(
             @RequestHeader("X-User-Id") String userId,
             @Valid @RequestBody CreateBookingRequest request
     ) {
@@ -25,12 +25,12 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingResponseDTO> getMyBookings(@RequestHeader("X-User-Id") String userId) {
+    public List<BookingResponse> getMyBookings(@RequestHeader("X-User-Id") String userId) {
         return bookingService.getBookingsByUserId(userId);
     }
 
     @GetMapping("/{id}")
-    public BookingResponseDTO getBookingById(
+    public BookingResponse getBookingById(
             @RequestHeader("X-User-Id") String userId,
             @PathVariable String id
     ) {
@@ -38,7 +38,7 @@ public class BookingController {
     }
 
     @PostMapping("/{id}/cancel")
-    public BookingResponseDTO cancelBooking(
+    public BookingResponse cancelBooking(
             @RequestHeader("X-User-Id") String userId,
             @PathVariable String id
     ) {

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicketInventoryResponseDTO {
+public class TicketInventoryResponse {
 
     private String ticketTypeId;
     private Integer availableQuantity;
