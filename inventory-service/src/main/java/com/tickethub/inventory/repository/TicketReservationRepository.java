@@ -2,7 +2,9 @@ package com.tickethub.inventory.repository;
 
 import com.tickethub.inventory.entity.ReservationStatus;
 import com.tickethub.inventory.entity.TicketReservation;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,10 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     List<TicketReservation> findByBookingId(String bookingId);
 
     List<TicketReservation> findByStatusAndExpiresAtBefore(ReservationStatus status, LocalDateTime expiresAt);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT reservation FROM TicketReservation reservation WHERE reservation.id = :reservationId")
+    Optional<TicketReservation> findByIdForUpdate(@Param("reservationId") String reservationId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("""

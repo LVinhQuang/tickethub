@@ -1,9 +1,9 @@
 package com.tickethub.inventory.service;
 
 import com.tickethub.inventory.dto.CreateInventoryRequest;
-import com.tickethub.inventory.dto.ReservationResponse;
+import com.tickethub.inventory.dto.TicketReservationDTO;
 import com.tickethub.inventory.dto.ReserveTicketRequest;
-import com.tickethub.inventory.dto.TicketInventoryResponseDTO;
+import com.tickethub.inventory.dto.TicketInventoryResponse;
 import com.tickethub.inventory.entity.ReservationStatus;
 import com.tickethub.inventory.entity.TicketInventory;
 import com.tickethub.inventory.entity.TicketReservation;
@@ -28,7 +28,7 @@ public class InventoryService {
     private final TicketReservationRepository ticketReservationRepository;
     private final InventoryMapper inventoryMapper;
 
-    public TicketInventoryResponseDTO createInventory(CreateInventoryRequest request) {
+    public TicketInventoryResponse createInventory(CreateInventoryRequest request) {
         if (ticketInventoryRepository.findByTicketTypeId(request.getTicketTypeId()).isPresent()) {
             throw new IllegalStateException(
                     "Inventory already exists for ticket type: " + request.getTicketTypeId()
@@ -47,7 +47,7 @@ public class InventoryService {
         return inventoryMapper.toTicketInventoryResponseDTO(savedInventory);
     }
 
-    public TicketInventoryResponseDTO getTicketInventory(String ticketTypeId) {
+    public TicketInventoryResponse getTicketInventory(String ticketTypeId) {
         TicketInventory inventory = ticketInventoryRepository.findByTicketTypeId(ticketTypeId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Inventory not found for ticket type: " + ticketTypeId
@@ -57,7 +57,7 @@ public class InventoryService {
     }
 
     @Transactional
-    public ReservationResponse reserveTicket(ReserveTicketRequest request) {
+    public TicketReservationDTO reserveTicket(ReserveTicketRequest request) {
         TicketReservation existingReservation = ticketReservationRepository
                 .findByBookingIdAndTicketTypeId(request.getBookingId(), request.getTicketTypeId())
                 .orElse(null);
@@ -105,9 +105,9 @@ public class InventoryService {
     }
 
     @Transactional
-    public ReservationResponse confirmReservation(String reservationId) {
+    public TicketReservationDTO confirmReservation(String reservationId) {
         TicketReservation reservation = ticketReservationRepository
-                .findById(reservationId)
+                .findByIdForUpdate(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
 
         if (reservation.getStatus() == ReservationStatus.CONFIRMED)
@@ -143,8 +143,8 @@ public class InventoryService {
     }
 
     @Transactional
-    public ReservationResponse releaseReservation(String reservationId) {
-        TicketReservation reservation = ticketReservationRepository.findById(reservationId)
+    public TicketReservationDTO releaseReservation(String reservationId) {
+        TicketReservation reservation = ticketReservationRepository.findByIdForUpdate(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Reservation not found: " + reservationId
                 ));

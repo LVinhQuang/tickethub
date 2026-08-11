@@ -33,6 +33,13 @@ spring:
               filters:
                 - JwtValidationFilter
 
+            - id: inventory-service
+              uri: ${INVENTORY_SERVICE_URL:http://localhost:8084}
+              predicates:
+                - Path=/inventory/**
+              filters:
+                - JwtValidationFilter
+
 app:
   jwt:
     secret: "this-is-a-demo-secret-key-for-tickethub-auth-service"
