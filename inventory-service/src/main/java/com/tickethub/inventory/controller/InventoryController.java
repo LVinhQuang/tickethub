@@ -1,9 +1,10 @@
 package com.tickethub.inventory.controller;
 
 import com.tickethub.inventory.dto.CreateInventoryRequest;
+import com.tickethub.inventory.dto.ReserveTicketsRequest;
 import com.tickethub.inventory.dto.TicketInventoryResponse;
 import com.tickethub.inventory.dto.TicketReservationDTO;
-import com.tickethub.inventory.dto.ReserveTicketRequest;
+import com.tickethub.inventory.service.InventoryReservationService;
 import com.tickethub.inventory.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
     private final InventoryService inventoryService;
+    private final InventoryReservationService inventoryReservationService;
 
     @PostMapping
     public ResponseEntity<TicketInventoryResponse> createInventory(
@@ -37,20 +41,20 @@ public class InventoryController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<TicketReservationDTO> reserveTicket(
-            @Valid @RequestBody ReserveTicketRequest request
+    public ResponseEntity<List<TicketReservationDTO>> reserveTickets(
+            @Valid @RequestBody ReserveTicketsRequest request
     ) {
-        TicketReservationDTO response = inventoryService.reserveTicket(request);
+        List<TicketReservationDTO> response = inventoryService.reserveTickets(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/reservations/{reservationId}/confirm")
     public TicketReservationDTO confirmReservation(@PathVariable String reservationId) {
-        return inventoryService.confirmReservation(reservationId);
+        return inventoryReservationService.confirmReservation(reservationId);
     }
 
     @PostMapping("/reservations/{reservationId}/release")
     public TicketReservationDTO releaseReservation(@PathVariable String reservationId) {
-        return inventoryService.releaseReservation(reservationId);
+        return inventoryReservationService.releaseReservation(reservationId);
     }
 }
