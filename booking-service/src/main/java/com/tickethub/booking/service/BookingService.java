@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +19,7 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final CatalogClient catalogClient;
+    private final InventoryClient inventoryClient;
 
     @Transactional
     public BookingResponse createBooking(String userId, CreateBookingRequest request) {
@@ -32,9 +32,18 @@ public class BookingService {
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<BookingItem> items = new ArrayList<>();
+        Set<String> ticketTypeIds = new HashSet<>();
 
         // 2. Process request items and calculate total amount
         for (BookingItemRequest itemReq : request.getItems()) {
+
+            // Check duplicate ticket type
+            if (!ticketTypeIds.add(itemReq.getTicketTypeId())) {
+                throw new IllegalArgumentException(
+                        "Duplicate ticket type: " + itemReq.getTicketTypeId()
+                );
+            }
+
             // Call Catalog Service via Feign Client
             TicketTypeResponse ticketType = catalogClient.getTicketTypeById(itemReq.getTicketTypeId());
             if (ticketType == null) {
@@ -66,9 +75,29 @@ public class BookingService {
                 .build();
         booking.getStatusHistory().add(history);
 
-        // 4. Save to DB
-        Booking saved = bookingRepository.save(booking);
+        // 4. Save booking
+        Booking saved = bookingRepository.saveAndFlush(booking);
 
+        // 5. Call inventory to reserve ticket
+        ReserveTicketsRequest reserveTicketsRequest = ReserveTicketsRequest.builder()
+                .bookingId(saved.getId())
+                .userId(userId)
+                .items(request.getItems())
+                .build();
+
+        List<ReserveTicketResponse> reserveTicketResponses = inventoryClient.reserveTicket(reserveTicketsRequest);
+
+        Map<String, String> reservationIdByTicketType = new HashMap<>();
+        for (ReserveTicketResponse resItem : reserveTicketResponses) {
+            reservationIdByTicketType.put(resItem.getTicketTypeId(), resItem.getId());
+        }
+
+        saved.getItems().forEach(item -> {
+            item.setReservationId(reservationIdByTicketType.get(item.getTicketTypeId()));
+        });
+
+        saved.setStatus(BookingStatus.WAITING_FOR_PAYMENT);
+        bookingRepository.save(saved);
         return mapToBookingResponse(saved);
     }
 

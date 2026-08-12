@@ -17,6 +17,7 @@ public class BookingItem {
     private String id;
 
     private String ticketTypeId;
+    private String reservationId;
     private Integer quantity;
     private BigDecimal price;
 
