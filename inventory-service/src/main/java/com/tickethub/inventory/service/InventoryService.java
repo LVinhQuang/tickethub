@@ -82,6 +82,22 @@ public class InventoryService {
         return reservations;
     }
 
+    @Transactional
+    public List<TicketReservationDTO> releaseReservations(List<String> reservationIds) {
+        List<String> sortedReservationIds = reservationIds.stream()
+                .sorted()
+                .toList();
+
+        validateUniqueReservationIds(sortedReservationIds);
+
+        List<TicketReservationDTO> reservations = new ArrayList<>();
+        for (String reservationId : sortedReservationIds) {
+            reservations.add(inventoryReservationService.releaseReservation(reservationId));
+        }
+
+        return reservations;
+    }
+
     private void validateUniqueTicketTypes(List<ReserveTicketsRequest.Item> items) {
         Set<String> ticketTypeIds = new HashSet<>();
 
@@ -89,6 +105,18 @@ public class InventoryService {
             if (!ticketTypeIds.add(item.getTicketTypeId())) {
                 throw new IllegalStateException(
                         "Duplicate ticket type in reservation request: " + item.getTicketTypeId()
+                );
+            }
+        }
+    }
+
+    private void validateUniqueReservationIds(List<String> reservationIds) {
+        Set<String> uniqueReservationIds = new HashSet<>();
+
+        for (String reservationId : reservationIds) {
+            if (!uniqueReservationIds.add(reservationId)) {
+                throw new IllegalStateException(
+                        "Duplicate reservation ID in release request: " + reservationId
                 );
             }
         }

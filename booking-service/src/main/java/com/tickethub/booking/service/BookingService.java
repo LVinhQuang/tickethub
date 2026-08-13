@@ -138,16 +138,31 @@ public class BookingService {
 
     @Transactional
     public BookingResponse cancelBooking(String userId, String bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
+        Booking booking = bookingRepository.findByIdForUpdate(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (!booking.getUserId().equals(userId)) {
             throw new RuntimeException("Access denied to this booking");
         }
 
-        if (booking.getStatus() == BookingStatus.CONFIRMED || booking.getStatus() == BookingStatus.CANCELLED) {
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            return mapToBookingResponse(booking);
+        }
+
+        if (booking.getStatus() != BookingStatus.WAITING_FOR_PAYMENT) {
             throw new RuntimeException("Cannot cancel booking in status: " + booking.getStatus());
         }
+
+        List<String> reservationIds = booking.getItems().stream()
+                .map(BookingItem::getReservationId)
+                .toList();
+
+        if (reservationIds.isEmpty()
+                || reservationIds.stream().anyMatch(id -> id == null || id.isBlank())) {
+            throw new IllegalStateException("Booking contains invalid reservation IDs");
+        }
+
+        inventoryClient.releaseReservations(reservationIds);
 
         booking.setStatus(BookingStatus.CANCELLED);
         
@@ -158,8 +173,9 @@ public class BookingService {
                 .build();
         booking.getStatusHistory().add(history);
 
-        Booking saved = bookingRepository.save(booking);
-        return mapToBookingResponse(saved);
+        // No need to call booking.save() (hibernate dirty checking)
+
+        return mapToBookingResponse(booking);
     }
 
     private BookingResponse mapToBookingResponse(Booking booking) {
