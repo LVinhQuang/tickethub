@@ -61,6 +61,15 @@ public class InventoryController {
         return inventoryService.releaseReservations(reservationIds);
     }
 
+    @PostMapping("/reservations/confirm")
+    public List<TicketReservationDTO> confirmReservations(
+            @RequestBody
+            @NotEmpty(message = "reservationIds must contain at least one reservation")
+            List<@NotBlank(message = "reservationId is required") String> reservationIds
+    ) {
+        return inventoryService.confirmReservations(reservationIds);
+    }
+
     @PostMapping("/reservations/{reservationId}/confirm")
     public TicketReservationDTO confirmReservation(@PathVariable String reservationId) {
         return inventoryReservationService.confirmReservation(reservationId);

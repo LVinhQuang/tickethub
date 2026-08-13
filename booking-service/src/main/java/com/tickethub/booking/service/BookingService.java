@@ -153,16 +153,7 @@ public class BookingService {
             throw new RuntimeException("Cannot cancel booking in status: " + booking.getStatus());
         }
 
-        List<String> reservationIds = booking.getItems().stream()
-                .map(BookingItem::getReservationId)
-                .toList();
-
-        if (reservationIds.isEmpty()
-                || reservationIds.stream().anyMatch(id -> id == null || id.isBlank())) {
-            throw new IllegalStateException("Booking contains invalid reservation IDs");
-        }
-
-        inventoryClient.releaseReservations(reservationIds);
+        inventoryClient.releaseReservations(getReservationIds(booking));
 
         booking.setStatus(BookingStatus.CANCELLED);
         
@@ -176,6 +167,47 @@ public class BookingService {
         // No need to call booking.save() (hibernate dirty checking)
 
         return mapToBookingResponse(booking);
+    }
+
+    @Transactional
+    public BookingResponse confirmBooking(String bookingId) {
+        Booking booking = bookingRepository.findByIdForUpdate(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            return mapToBookingResponse(booking);
+        }
+
+        if (booking.getStatus() != BookingStatus.WAITING_FOR_PAYMENT
+                && booking.getStatus() != BookingStatus.PAYMENT_PROCESSING) {
+            throw new RuntimeException("Cannot confirm booking in status: " + booking.getStatus());
+        }
+
+        inventoryClient.confirmReservations(getReservationIds(booking));
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+
+        BookingStatusHistory history = BookingStatusHistory.builder()
+                .status(BookingStatus.CONFIRMED)
+                .remarks("Payment completed, booking confirmed")
+                .booking(booking)
+                .build();
+        booking.getStatusHistory().add(history);
+
+        return mapToBookingResponse(booking);
+    }
+
+    private List<String> getReservationIds(Booking booking) {
+        List<String> reservationIds = booking.getItems().stream()
+                .map(BookingItem::getReservationId)
+                .toList();
+
+        if (reservationIds.isEmpty()
+                || reservationIds.stream().anyMatch(id -> id == null || id.isBlank())) {
+            throw new IllegalStateException("Booking contains invalid reservation IDs");
+        }
+
+        return reservationIds;
     }
 
     private BookingResponse mapToBookingResponse(Booking booking) {

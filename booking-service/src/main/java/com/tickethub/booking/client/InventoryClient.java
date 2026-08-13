@@ -17,6 +17,9 @@ public interface InventoryClient {
     @PostMapping("/inventory/reservations/release")
     void releaseReservations(@RequestBody List<String> reservationIds);
 
+    @PostMapping("/inventory/reservations/confirm")
+    void confirmReservations(@RequestBody List<String> reservationIds);
+
     @PostMapping("/inventory/reservations/{reservationId}/confirm")
     public ReserveTicketResponse confirmReservation(@PathVariable String reservationId);
 
