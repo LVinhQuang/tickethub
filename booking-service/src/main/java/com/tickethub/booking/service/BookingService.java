@@ -26,7 +26,7 @@ public class BookingService {
         // 1. Initialize booking
         Booking booking = Booking.builder()
                 .userId(userId)
-                .status(BookingStatus.PENDING)
+                .status(BookingStatus.WAITING_FOR_PAYMENT)
                 .totalAmount(BigDecimal.ZERO)
                 .build();
 
@@ -69,8 +69,8 @@ public class BookingService {
 
         // 3. Add initial status history
         BookingStatusHistory history = BookingStatusHistory.builder()
-                .status(BookingStatus.PENDING)
-                .remarks("Booking created, pending payment")
+                .status(BookingStatus.WAITING_FOR_PAYMENT)
+                .remarks("Booking created, waiting for payment")
                 .booking(booking)
                 .build();
         booking.getStatusHistory().add(history);
@@ -87,17 +87,33 @@ public class BookingService {
 
         List<ReserveTicketResponse> reserveTicketResponses = inventoryClient.reserveTicket(reserveTicketsRequest);
 
+        if (reserveTicketResponses == null
+                || reserveTicketResponses.size() != saved.getItems().size()) {
+            throw new IllegalStateException("Invalid reservation response from inventory");
+        }
+
         Map<String, String> reservationIdByTicketType = new HashMap<>();
         for (ReserveTicketResponse resItem : reserveTicketResponses) {
+            if (resItem == null
+                    || resItem.getTicketTypeId() == null
+                    || resItem.getId() == null) {
+                throw new IllegalStateException("Inventory returned an invalid reservation response");
+            }
+
             reservationIdByTicketType.put(resItem.getTicketTypeId(), resItem.getId());
         }
 
         saved.getItems().forEach(item -> {
-            item.setReservationId(reservationIdByTicketType.get(item.getTicketTypeId()));
+            String reservationId = reservationIdByTicketType.get(item.getTicketTypeId());
+            if (reservationId == null) {
+                throw new IllegalStateException(
+                        "Missing reservation for ticket type: " + item.getTicketTypeId()
+                );
+            }
+
+            item.setReservationId(reservationId);
         });
 
-        saved.setStatus(BookingStatus.WAITING_FOR_PAYMENT);
-        bookingRepository.save(saved);
         return mapToBookingResponse(saved);
     }
 
